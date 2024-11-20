@@ -5,4 +5,5 @@ module.exports = {
     "CONNECTION_STRING":process.env.CONNECTION_STRING || "mongodb://localhost:27017/project_base",
     //connection string field oluşturuldu. Değişken tanımlandı ve env'den okumasını istedik. 
     //Yoksa defauly olarak mongodb'ye bağlansın. Mongo db'deki project_base veritabanına ataması yapıldı.
+    "PORT":process.env.PORT || 3000
 }
