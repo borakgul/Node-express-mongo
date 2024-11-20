@@ -1,3 +1,9 @@
+if (process.env.NODE_ENV != 'production')   //Eğer production değilse dotenv'i import et. Değilse import etme.
+  //NODE_ENV express.js 'in bize verdiği bir paramatredir.
+// Bu parametre 2 değer alır. Default olarak 'development' bir diğer değer ise 'production'dır.
+
+   require('dotenv').config()
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
