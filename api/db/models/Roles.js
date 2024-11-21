@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-   
-},{
-    // timestamps:true aynı şey
-    timestamps:{
+
+    role_name:{type:mongoose.SchemaTypes.String,required:true},
+    is_active:{type:Boolean,default:true,},
+    created_by: {type: mongoose.SchemaTypes.ObjectId,required: true,}
+},
+{
+    versionKey: false,
+         
+     timestamps:{// timestamps:true aynı şey
         createdAt: "created_at",
         updatedAt: "updated_at"
     } //veri veya şema eklerken bu alanlar otomatik olarak alınır. Ek olarak bellirtmek gerekmez.
