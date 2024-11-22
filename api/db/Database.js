@@ -15,8 +15,8 @@ class Database {
     async connect(options) {
         try {
             console.log("connecting...");
-            let db = await mongoose.connect(options.CONNECTION_STRING,{usedNewUrlParser:true,useUnifiedTopology:true});
-
+            let db = await mongoose.connect(options.CONNECTION_STRING);
+            //,{usedNewUrlParser:true,useUnifiedTopology:true}
             this.mongoConnection = db;
             console.log("Database connection established");
 
