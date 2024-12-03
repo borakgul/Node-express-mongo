@@ -20,15 +20,23 @@ class Response {
                     description: error.description
                 }
             };
-        }
+        } else if (error.message.includes("E11000")) {
 
+            return {
+                code: Enum.HTTP_CODES.CONFLICT,
+                error: {
+                    message:"Alreeady exists",  
+                    description: "Already exists!"
+                }
+            }
+        } 
         return {
-            code: Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
+            code: Enum.HTTP_CODES.HTTP_CODES,
             error: {
-                message:"Unknown Error !",
+                message:"Unknown error",  
                 description: error.message
             }
-        };
+        }
     }
 }
 
