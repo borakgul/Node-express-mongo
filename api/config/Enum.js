@@ -27,9 +27,9 @@ module.exports = {
         "DEBUG":"DEBUG",
         "VERBOSE":"VERBOSE",
         "HTTP":"HTTP",
-        
+
     },
 
     PASSLENGTH:8,
     SUPER_ADMIN :"SUPER_ADMIN"
- }
+ };
