@@ -12,6 +12,7 @@ class Response {
     }
 
     static errorResponse(error) {
+        console.error(error);
         if (error instanceof CustomError) {
             return {
                 code: error.code,
@@ -31,7 +32,7 @@ class Response {
             }
         } 
         return {
-            code: Enum.HTTP_CODES.HTTP_CODES,
+            code: Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
             error: {
                 message:"Unknown error",  
                 description: error.message
