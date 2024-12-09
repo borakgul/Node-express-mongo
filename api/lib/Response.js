@@ -12,6 +12,7 @@ class Response {
     }
 
     static errorResponse(error) {
+        console.error(error);
         if (error instanceof CustomError) {
             return {
                 code: error.code,
@@ -20,15 +21,23 @@ class Response {
                     description: error.description
                 }
             };
-        }
+        } else if (error.message.includes("E11000")) {
 
+            return {
+                code: Enum.HTTP_CODES.CONFLICT,
+                error: {
+                    message:"Alreeady exists",  
+                    description: "Already exists!"
+                }
+            }
+        } 
         return {
             code: Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
             error: {
-                message:"Unknown Error !",
+                message:"Unknown error",  
                 description: error.message
             }
-        };
+        }
     }
 }
 

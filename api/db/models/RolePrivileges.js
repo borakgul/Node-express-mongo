@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
-    role_id:{type: mongoose.SchemaTypes.ObjectId,required: true,},
-    permission:{type:string,required:true},
-    created_by: {type: mongoose.SchemaTypes.ObjectId,required: true,}   
+    role_id:{type: mongoose.SchemaTypes.ObjectId,required: true,},//role id alanı roles tablosundan gelmektedir. DB otomatik olarak oluşturur.
+    permission:{type:String,required:true}, //permission alanı config/role_privileges.js dosyasındaki privileges alanındaki Key alanı ile eşleşmelidir.
+    created_by: {type: mongoose.SchemaTypes.ObjectId}   
 },
 {
     versionKey: false,
-         
      timestamps:{// timestamps:true aynı şey
         createdAt: "created_at",
         updatedAt: "updated_at"
