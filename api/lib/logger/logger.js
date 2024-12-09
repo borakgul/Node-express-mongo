@@ -7,7 +7,7 @@ const formats = format.combine(
     format.simple(),
     format.splat(),
     format.printf(info => `${info.timestamp} ${info.level.toUpperCase()}: [email:${info.message.email}] [location:${info.message.location}] [procType:${info.message.proc_type}] [log:${info.message.log}]`)
-)
+);
 
 // 2023-05-04 12:12:12 INFO: [email:asd] [location:asd] [procType:asd] [log:{}]
 

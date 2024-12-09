@@ -4,11 +4,10 @@ const Categories = require('../db/models/Categories');
 const Response = require('../lib/Response');
 const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
-const { name } = require('ejs');
 const AuditLogs = require('../lib/AuditLogs');
 const logger = require('../lib/logger/loggerclas');
 
-router.get('/', async(req, res, next) => {  //http://localhost:3000/api/categories 
+router.get('/', async(req, res) => {  //http://localhost:3000/api/categories 
   try {
       let categories = await Categories.find({});  
        //tüm kategorileri getir.
@@ -70,7 +69,7 @@ router.post("/add",async(req,res)=>{
         }
     });
     router.post("/delete",async(req,res)=>{
-        let body = req.body
+        let body = req.body;
 
         try {
             if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation Error","_id field must be filled.");
@@ -88,5 +87,5 @@ router.post("/add",async(req,res)=>{
 
             res.status(errorResponse.code).json(errorResponse);
         }
-    })
+    });
     module.exports = router; //router'ı export et.

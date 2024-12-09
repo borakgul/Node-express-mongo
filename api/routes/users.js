@@ -7,7 +7,6 @@ const CustomError = require('../lib/Error');
 const Enum = require('../config/Enum');
 const UserRoles = require('../db/models/UserRoles');
 const Roles = require('../db/models/Roles');
-const mongoose = require('mongoose');
 
 
 const router = express.Router();
@@ -77,17 +76,12 @@ router.post('/update', async (req, res) => {
 
       // Role güncelleme işlemleri
       if (Array.isArray(body.roles) && body.roles.length > 0) {
-        console.log("User ID:", body._id);
         let userRoles = await UserRoles.find({ user_id: body._id });
-        console.log("Incoming Roles:", body.roles);
-        console.log("User Roles from DB:", userRoles);
-          // Silinecek roller
-          let removedRoles = userRoles.filter(x => !body.roles.includes(x.role_id.toString()));
-          console.log("Removed Roles:", removedRoles);
+        
+        let removedRoles = userRoles.filter(x => !body.roles.includes(x.role_id.toString()));
 
           // Yeni roller
           let newRoles = body.roles.filter(x => !userRoles.map(r => r.role_id).includes(x));
-          console.log("New Roles:", newRoles);
 
           // Silme işlemi
           if (removedRoles.length > 0) {

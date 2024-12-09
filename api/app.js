@@ -2,7 +2,7 @@ if (process.env.NODE_ENV != 'production')   //Eğer production değilse dotenv'i
   //NODE_ENV express.js 'in bize verdiği bir paramatredir.
 // Bu parametre 2 değer alır. Default olarak 'development' bir diğer değer ise 'production'dır.
 
-   require('dotenv').config()
+   require('dotenv').config();
 
 var createError = require('http-errors');
 var express = require('express');
@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req,res,next)=>{
-  console.log("ben app.js'te tanımlanan middleare'im")
+  console.log("ben app.js'te tanımlanan middleare'im");
   next();
 });
 
