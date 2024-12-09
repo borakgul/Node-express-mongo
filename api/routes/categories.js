@@ -6,6 +6,7 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 const { name } = require('ejs');
 const AuditLogs = require('../lib/AuditLogs');
+const logger = require('../lib/logger/loggerclas');
 
 router.get('/', async(req, res, next) => {  //http://localhost:3000/api/categories 
   try {
@@ -34,14 +35,16 @@ router.post("/add",async(req,res)=>{
         });
         await category.save();
 
-        AuditLogs.info(req.user?.email,"Categories","Add",category);
+        AuditLogs.info(req.user?.email, "Categories", "Add", category);
+        logger.info(req.user?.email, "Categories", "Add", category);
 
         res.json(Response.successResponse({success: true})) ;
 
     }catch (err){
 
+        logger.error(req.user?.email, "Categories", "Add", err);
         let errorResponse = Response.errorResponse(err);
-        res.status(errorResponse.code).json(errorResponse);
+        res.status(errorResponse.code). json(errorResponse);
     }
 
     });
