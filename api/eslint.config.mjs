@@ -23,7 +23,8 @@
             "argsIgnorePattern": "^next$" // 'next' adındaki parametreleri görmezden gel
           }], // Kullanılmayan değişkenler için uyarı verme
         "no-undef": "off",       // Tanımsız değişkenlere uyarı verme
-        "no-console": "off",    // Konsol kullanımını uyarı seviyesinde tut
+        "no-console": "off",
+        "no-empty": "warn",   // Konsol kullanımını uyarı seviyesinde tut
         "semi": ["error", "always"], // Her ifadeden sonra noktalı virgül zorunlu
         },
     },
