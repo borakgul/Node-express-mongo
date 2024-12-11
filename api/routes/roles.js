@@ -7,6 +7,12 @@ const Response = require('../lib/Response');
 const Enum = require('../config/Enum');
 const role_privileges = require('../config/role_privileges');
 const RolePrivileges = require('../db/models/RolePrivileges');
+const auth = require('../lib/auth')();  
+
+router.all("*",auth.authenticate(),(req,res,next)=>{
+    next();
+});
+
 router.get('/', async(req, res, next) => { 
     try {
         let roles = await Roles.find({});
