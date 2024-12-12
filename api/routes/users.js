@@ -60,13 +60,13 @@ router.post("/auth", async (req, res) => {
       let payload = {
         id: user._id,
         exp: parseInt(Date.now() / 1000) * config.JWT.EXPIRE_TIME
-      }
+      };
       let token = jwt.encode(payload, config.JWT.SECRET);
       let userData = {
         _id: user._id,
         first_name: user.first_name,
         last_name: user.last_name
-      }
+      };
       res.json(Response.successResponse({ token, user: userData }));
     } catch (err) {
       let errorResponse = Response.errorResponse(err);
@@ -79,7 +79,7 @@ router.all("*", auth.authenticate(), (req, res, next) => {
 });
 
 /* GET users listing */
-router.get('/', async (req, res) => {
+router.get('/',auth.checkRoles("user_view"), async (req, res) => {
     try {
         let users = await Users.find({});
         res.json(Response.successResponse(users));
@@ -90,7 +90,7 @@ router.get('/', async (req, res) => {
 });
 
 /* POST add user */
-router.post('/add', async (req, res) => {
+router.post('/add',auth.checkRoles("user_add"), async (req, res) => {
     let body = req.body;
     try {
         if (!body.email) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Email field must be filled.");
@@ -125,7 +125,7 @@ router.post('/add', async (req, res) => {
 });
 
 /* POST update user */
-router.post('/update', async (req, res) => {
+router.post('/update',auth.checkRoles("user_update"), async (req, res) => {
   let body = req.body;
   let updates = {};
 
@@ -179,7 +179,7 @@ router.post('/update', async (req, res) => {
 
 
 /* POST delete user */
-router.post('/delete', async (req, res) => {
+router.post('/delete',auth.checkRoles("user_delete"), async (req, res) => {
     let body = req.body;
     try {
         if (!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "_id field must be filled.");
@@ -193,7 +193,4 @@ router.post('/delete', async (req, res) => {
         res.status(errorResponse.code || 500).json(errorResponse);
     }
 });
-
-
-
 module.exports = router;

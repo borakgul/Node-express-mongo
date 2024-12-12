@@ -6,13 +6,12 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 const AuditLogs = require('../lib/AuditLogs');
 const logger = require('../lib/logger/loggerclas');
-const auth = require('../lib/auth')();  
+const auth = require("../lib/auth")();
 
-router.all("*",auth.authenticate(),(req,res,next)=>{
+router.all("*", auth.authenticate(), (req, res, next) => {
     next();
 });
-
-router.get('/', async(req, res) => {  //http://localhost:3000/api/categories 
+router.get('/',auth.checkRoles("category_view") ,async(req, res) => {  //http://localhost:3000/api/categories 
   try {
       let categories = await Categories.find({});  
        //tüm kategorileri getir.
@@ -24,7 +23,7 @@ router.get('/', async(req, res) => {  //http://localhost:3000/api/categories
     }
 });
 
-router.post("/add",async(req,res)=>{
+router.post("/add",auth.checkRoles("category_add") , async(req,res)=>{
     let body = req.body;
     try{
 
@@ -53,7 +52,7 @@ router.post("/add",async(req,res)=>{
 
     });
     
-    router.post("/update",async(req,res)=>{
+    router.post("/update",auth.checkRoles("category_update"),async(req,res)=>{
         let body = req.body;
         try{
             if(!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST,"Validation Error","_id field must be filled.");
@@ -73,7 +72,7 @@ router.post("/add",async(req,res)=>{
             res.status(errorResponse.code).json(errorResponse);
         }
     });
-    router.post("/delete",async(req,res)=>{
+    router.post("/delete",auth.checkRoles("category_delete"), async(req,res)=>{
         let body = req.body;
 
         try {
