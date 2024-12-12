@@ -6,7 +6,11 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 const AuditLogs = require('../lib/AuditLogs');
 const logger = require('../lib/logger/loggerclas');
+const auth = require("../lib/auth")();
 
+router.all("*", auth.authenticate(), (req, res, next) => {
+    next();
+});
 router.get('/',auth.checkRoles("category_view") ,async(req, res) => {  //http://localhost:3000/api/categories 
   try {
       let categories = await Categories.find({});  
