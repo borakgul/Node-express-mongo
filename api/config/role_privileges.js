@@ -1,4 +1,3 @@
-
 module.exports = { 
     //view,update,add ve delete işlemleri için yetkileri tanımlama.
     privGroups:[

@@ -12,9 +12,79 @@ const jwt  = require('jwt-simple');
 
 
 const router = express.Router();
+<<<<<<< Updated upstream
+=======
+const auth = require('../lib/auth')();
+
+/* POST register */
+router.post('/register', async (req, res) => {
+    let body = req.body;
+    try {
+        let user = await Users.findOne({});
+        if (user) return res.sendStatus(Enum.HTTP_CODES.NOT_FOUND);
+
+        if (!body.email) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Email field must be filled.");
+        if (is_js.not.email(body.email)) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Invalid email format.");
+        if (!body.password) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Password field must be filled.");
+        if (body.password.length < Enum.PASSLENGTH) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", `Password length must be greater than ${Enum.PASSLENGTH}.`);
+
+        let password = bcrypt.hashSync(body.password, bcrypt.genSaltSync(8), null);
+
+        let createdUser = await Users.create({
+            email: body.email,
+            password,
+            is_active: true,
+            first_name: body.first_name,
+            last_name: body.last_name,
+            phone_number: body.phone_number
+        });
+
+        let role = await Roles.create({
+            role_name: Enum.SUPER_ADMIN,
+            is_active: true,
+            created_by: createdUser._id
+        });
+
+        await UserRoles.create({ role_id: role._id, user_id: createdUser._id });
+
+        res.status(Enum.HTTP_CODES.CREATED).json(Response.successResponse({ success: true }, Enum.HTTP_CODES.CREATED));
+    } catch (err) {
+        let errorResponse = Response.errorResponse(err);
+        res.status(errorResponse.code || 500).json(errorResponse);
+    }
+});
+
+router.post("/auth", async (req, res) => {
+    try {
+      let { email, password } = req.body;
+      Users.validateFieldsBeforeAuth(email, password);
+      let user = await Users.findOne({ email });
+      if (!user) throw new CustomError(Enum.HTTP_CODES.UNAUTHORIZED, "Validation Error", "Email or password wrong");
+      if (!user.validPassword(password)) throw new CustomError(Enum.HTTP_CODES.UNAUTHORIZED, "Validation Error", "Email or password wrong");
+      let payload = {
+        id: user._id,
+        exp: parseInt(Date.now() / 1000) * config.JWT.EXPIRE_TIME
+      };
+      let token = jwt.encode(payload, config.JWT.SECRET);
+      let userData = {
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name
+      };
+      res.json(Response.successResponse({ token, user: userData }));
+    } catch (err) {
+      let errorResponse = Response.errorResponse(err);
+      res.status(errorResponse.code).json(errorResponse);
+    }
+  });
+
+router.all("*", auth.authenticate(), (req, res, next) => {
+    next();
+});
+>>>>>>> Stashed changes
 
 /* GET users listing */
-router.get('/', async (req, res) => {
+router.get('/',auth.checkRoles("user_view"), async (req, res) => {
     try {
         let users = await Users.find({});
         res.json(Response.successResponse(users));
@@ -25,7 +95,7 @@ router.get('/', async (req, res) => {
 });
 
 /* POST add user */
-router.post('/add', async (req, res) => {
+router.post('/add',auth.checkRoles("user_add"), async (req, res) => {
     let body = req.body;
     try {
         if (!body.email) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Email field must be filled.");
@@ -60,7 +130,7 @@ router.post('/add', async (req, res) => {
 });
 
 /* POST update user */
-router.post('/update', async (req, res) => {
+router.post('/update',auth.checkRoles("user_update"), async (req, res) => {
   let body = req.body;
   let updates = {};
 
@@ -114,7 +184,7 @@ router.post('/update', async (req, res) => {
 
 
 /* POST delete user */
-router.post('/delete', async (req, res) => {
+router.post('/delete',auth.checkRoles("user_delete"), async (req, res) => {
     let body = req.body;
     try {
         if (!body._id) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "_id field must be filled.");

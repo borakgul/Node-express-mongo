@@ -4,7 +4,7 @@ const moment = require("moment");
 const AuditLogs = require("../db/models/AuditLogs");
 const Response = require("../lib/Response");  
 
-router.post("/" , async (req,res)=>{
+router.post("/" ,auth.checkRoles("auditlogs_view"), async (req,res)=>{
     try {
         
         let body = req.body;

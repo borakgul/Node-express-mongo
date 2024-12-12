@@ -29,7 +29,7 @@ class Response {
                     message:"Alreeady exists",  
                     description: "Already exists!"
                 }
-            }
+            };
         } 
         return {
             code: Enum.HTTP_CODES.INTERNAL_SERVER_ERROR,
@@ -37,7 +37,7 @@ class Response {
                 message:"Unknown error",  
                 description: error.message
             }
-        }
+        };
     }
 }
 
