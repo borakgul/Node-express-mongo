@@ -25,7 +25,7 @@ module.exports = function () {
 
                 let rolePrivileges = await RolePrivileges.find({ role_id: { $in: userRoles.map(ur => ur.role_id) } });
 
-                let privileges = rolePrivileges.map(rp => privs.privileges.find(x => x.Key == rp.permission))
+                let privileges = rolePrivileges.map(rp => privs.privileges.find(x => x.Key == rp.permission));
                
                 // rolePrivileges bize role_id, permission bilgileri var
                 // config içerisindeki role_privileges içerisinde privileges privs.priveleges içindeki diziyi(privileges) Key değerine göre dön ve      
@@ -35,7 +35,8 @@ module.exports = function () {
                     email: user.email,
                     first_name: user.first_name,
                     last_name: user.last_name,
-                    exp: parseInt(Date.now() / 1000) * config.JWT.EXPIRE_TIME
+                    exp: parseInt(Date.now() / 1000) * config.JWT.EXPIRE_TIME,
+                    language: user.language
                 });
 
             } else {

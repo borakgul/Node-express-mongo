@@ -1,13 +1,14 @@
 var express = require('express');
-var router = express.Router();
-
+var router = express.Router();  
 const Roles = require('../db/models/Roles');
 const CustomError = require('../lib/Error');
 const Response = require('../lib/Response');
 const Enum = require('../config/Enum');
 const role_privileges = require('../config/role_privileges');
 const RolePrivileges = require('../db/models/RolePrivileges');
+const config = require("../config");
 const auth = require('../lib/auth')();  
+const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
 
 router.all("*",auth.authenticate(),(req,res,next)=>{
     next();
@@ -26,17 +27,16 @@ router.get("/", auth.checkRoles("role_view"), async (req, res) => {
     }
 });
 
-router.post('/add',auth.checkRoles("role_add") ,async(req, res, next) => {
+router.post('/add',auth.checkRoles("role_add"),async(req, res, next) => {
     let body = req.body;
 
     try {
 
-        if (!body.role_name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Role name field must be filled.");
+        if (!body.role_name) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE",req.user?.language),i18n.translate("COMMON.FIELD_MUST_BE_FILLED",req.user?.language,["user name"]));
 
         if (!body.permissions || !Array.isArray(body.permissions) || body.permissions.length === 0) {
 
-            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "Permissions field must be filled and must be an array.");
-        }
+            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),i18n.translate("COMMON.FIELD_MUST_BE_TYPE", req.user.language, ["permissions", "Array"]));        }
 
         let role = new Roles({
             role_name: body.role_name,
@@ -67,7 +67,8 @@ router.post("/update",auth.checkRoles("role_update"), async (req, res) => {
     let body = req.body;
     try {
         if (!body._id) {
-            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "_id field must be filled.");
+            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),
+            i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["_id"]));
         }
 
         // Role bilgilerini güncelle
@@ -81,19 +82,18 @@ router.post("/update",auth.checkRoles("role_update"), async (req, res) => {
         if (body.permissions && Array.isArray(body.permissions) && body.permissions.length > 0) {
             // Eski izinleri al
             let existingPermissions = await RolePrivileges.find({ role_id: body._id });
-            console.log("Existing Permissions:", existingPermissions);
+           
 
             // Silinecek izinler
             let removedPermissions = existingPermissions.filter(existing => !body.permissions.includes(existing.permission));
-            console.log("Removed Permissions:", removedPermissions);
-
+            
             if (removedPermissions.length > 0) {
                 await RolePrivileges.deleteMany({ _id: { $in: removedPermissions.map(x => x._id) } });
             }
 
             // Eklenmesi gereken yeni izinler
             let newPermissions = body.permissions.filter(newPerm => !existingPermissions.some(existing => existing.permission === newPerm));
-           // console.log("New Permissions:", newPermissions);
+           
 
             if (newPermissions.length > 0) {
                 let newPrivileges = newPermissions.map(permission => ({
@@ -101,7 +101,7 @@ router.post("/update",auth.checkRoles("role_update"), async (req, res) => {
                     permission,
                     created_by: req.user?.id || null,
                 }));
-                console.log("New Privileges:", newPrivileges);
+              
 
                 await RolePrivileges.insertMany(newPrivileges);
             }
@@ -119,7 +119,8 @@ router.post('/delete',auth.checkRoles("role_delete") , async (req, res) => {
 
     try {
         if (!body._id) {
-            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, "Validation Error", "_id field must be filled.");
+            throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),
+            i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["_id"]));
         }
 
         // Roles modelindeki remove metodunu çağır
