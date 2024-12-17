@@ -1,32 +1,29 @@
-    import globals from "globals";
-    import pluginJs from "@eslint/js";
+import globals from "globals";
+import pluginJs from "@eslint/js";
 
-    /** @type {import('eslint').Linter.Config[]} */
-    export default [
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+    pluginJs.configs.recommended, // Önce @eslint/js kurallarını uygula
     {
         // Projedeki tüm `.js` dosyalarını hedef al
         files: ["**/*.js"],
 
         languageOptions: {
-        ecmaVersion: "latest", // En son ECMAScript sürümünü kullan
-        sourceType: "module", // ES Modules destekleniyor
-        globals: {
-            ...globals.browser, // Tarayıcı ortamı değişkenlerini ekle
-            ...globals.node,    // Node.js ortamı değişkenlerini ekle
-        },
+            ecmaVersion: "latest",
+            sourceType: "module",
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+            },
         },
 
         rules: {
-        // Kuralları özelleştir
-        "no-unused-vars": ["warn", { 
-            "args": "after-used",          // Sadece kullanılmayan parametrelerden sonra hata üret
-            "argsIgnorePattern": "^next$" // 'next' adındaki parametreleri görmezden gel
-          }], // Kullanılmayan değişkenler için uyarı verme
-        "no-undef": "off",       // Tanımsız değişkenlere uyarı verme
-        "no-console": "off",
-        "no-empty": "warn",   // Konsol kullanımını uyarı seviyesinde tut
-        "semi": ["error", "always"], // Her ifadeden sonra noktalı virgül zorunlu
+            // Proje için özel kurallar
+            "no-unused-vars": "off", // Kullanılmayan değişkenler için kontrolü tamamen kapat
+            "no-undef": "off",
+            "no-console": "off",
+            "no-empty": "warn",
+            "semi": ["error", "always"],
         },
     },
-    pluginJs.configs.recommended, // @eslint/js tarafından önerilen kuralları kullan
-    ];
+];

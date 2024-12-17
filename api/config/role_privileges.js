@@ -93,6 +93,12 @@ module.exports = {
             group:"CATEGORIES",
             description:"Category Delete permission" 
         },
+        {
+            Key:"category_export",
+            name:"Category Export",
+            group:"CATEGORIES",
+            description:"Category Export permission" 
+        },
     
         {
             Key:"auditlogs_view",
